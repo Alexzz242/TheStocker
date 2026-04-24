@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://dgmcjmasssa2g"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0qees"]
+
+[node name="Player" type="CharacterBody3D" unique_id=1235616769]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=458872341]
+shape = SubResource("CapsuleShape3D_0qees")
+
+[node name="Head" type="Node3D" parent="." unique_id=1705645617]
+
+[node name="Camera3D" type="Camera3D" parent="Head" unique_id=595165549]
+
+[node name="FlashLight" type="SpotLight3D" parent="Head" unique_id=1791239514]
+
+[node name="InteractRay" type="RayCast3D" parent="Head" unique_id=1891611827]
+target_position = Vector3(0, 0, -2)
+
+[node name="HoldPoint" type="Marker3D" parent="Head" unique_id=1946731607]
+
+[node name="Hands" type="Node3D" parent="Head" unique_id=1026840915]
+
+[node name="HandAnimPlayer" type="AnimationPlayer" parent="Head/Hands" unique_id=1712665094]

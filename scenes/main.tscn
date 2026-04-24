@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://7o48wxdil07c"]
+
+[node name="Main" type="Node" unique_id=1276073212]
+
+[node name="CurrentLocation" type="Node" parent="." unique_id=1140688796]
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=288183009]

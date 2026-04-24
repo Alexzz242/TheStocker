@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://dfcujvhvregiv"]
+
+[node name="Apartment" type="Node3D" unique_id=2106245709]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=363767679]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=583208432]
+
+[node name="PlayerSpawn" type="Marker3D" parent="." unique_id=1776386637]
+
+[node name="interactables" type="Node3D" parent="." unique_id=654020828]

@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://ojftgcea5mvh"]
+
+[node name="Warehouse" type="Node3D" unique_id=1326784515]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1391329945]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1477612472]
+
+[node name="RoomContainer" type="Node3D" parent="." unique_id=1748281973]
+
+[node name="PlayerSpawn" type="Marker3D" parent="." unique_id=979479307]
+
+[node name="EnemySpawn" type="Node3D" parent="." unique_id=1222875960]
+
+[node name="LootSpawn" type="Node3D" parent="." unique_id=928128209]
+
+[node name="ExtractionZone" type="Area3D" parent="." unique_id=1658798554]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ExtractionZone" unique_id=749364150]
