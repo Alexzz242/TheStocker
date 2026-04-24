@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="TheStocker"
+run/main_scene="uid://7o48wxdil07c"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 

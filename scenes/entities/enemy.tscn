@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://c1ttu0hip8nwn"]
+
+[node name="Enemy" type="CharacterBody3D" unique_id=1681282236]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1096128052]
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=1886327601]
+
+[node name="EnemyAnimPlayer" type="AnimationPlayer" parent="." unique_id=1975001742]
+
+[node name="AnimationTree" type="AnimationTree" parent="." unique_id=1875026767]
