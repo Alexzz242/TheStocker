@@ -1,11 +1,24 @@
 [gd_scene format=3 uid="uid://c1ttu0hip8nwn"]
 
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_k12gj"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_d7j71"]
+radius = 0.43067846
+
 [node name="Enemy" type="CharacterBody3D" unique_id=1681282236]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1096128052]
+shape = SubResource("CapsuleShape3D_k12gj")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=1886327601]
 
 [node name="EnemyAnimPlayer" type="AnimationPlayer" parent="." unique_id=1975001742]
 
 [node name="AnimationTree" type="AnimationTree" parent="." unique_id=1875026767]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1225980754]
+
+[node name="DetectionZone" type="Area3D" parent="." unique_id=2120990186]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionZone" unique_id=1474017561]
+shape = SubResource("SphereShape3D_d7j71")

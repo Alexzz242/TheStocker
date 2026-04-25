@@ -21,3 +21,9 @@ target_position = Vector3(0, 0, -2)
 [node name="Hands" type="Node3D" parent="Head" unique_id=1026840915]
 
 [node name="HandAnimPlayer" type="AnimationPlayer" parent="Head/Hands" unique_id=1712665094]
+
+[node name="InspectPoint" type="Marker3D" parent="Head" unique_id=1850657856]
+
+[node name="InspectCamera" type="Camera3D" parent="Head" unique_id=2006861447]
+
+[node name="TSDScanRay" type="RayCast3D" parent="Head" unique_id=452906488]

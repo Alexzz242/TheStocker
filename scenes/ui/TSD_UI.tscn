@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://cg8hgbwwavf8o"]
+
+[node name="TSDOverlay" type="Control" unique_id=1178497299]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="Background" type="Panel" parent="." unique_id=2074378783]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=24772350]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ShiftTitle" type="Label" parent="VBoxContainer" unique_id=778482501]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer" unique_id=208503647]
+layout_mode = 2
+
+[node name="ItemList" type="VBoxContainer" parent="VBoxContainer/ScrollContainer" unique_id=106383138]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer" unique_id=1267132779]
+layout_mode = 2
+
+[node name="ScrollContainer 2" type="ScrollContainer" parent="VBoxContainer" unique_id=187996800]
+layout_mode = 2
+
+[node name="MessageLog" type="VBoxContainer" parent="VBoxContainer/ScrollContainer 2" unique_id=1103796242]
+layout_mode = 2
+
+[node name="ScanOverlay" type="TextureRect" parent="." unique_id=1714708736]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
