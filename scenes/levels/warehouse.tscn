@@ -8,6 +8,11 @@
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_fxdnj"]
 data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
 
+[sub_resource type="BoxMesh" id="BoxMesh_qdwo2"]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_m5vm6"]
+data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
+
 [node name="Warehouse" type="Node3D" unique_id=1326784515]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1391329945]
@@ -21,9 +26,20 @@ transform = Transform3D(4.0667553, 0, 0, 0, 0.123699546, 0, 0, 0, 4.484905, 0, -
 mesh = SubResource("BoxMesh_quuhf")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="RoomContainer/MeshInstance3D" unique_id=1330558052]
+collision_layer = 9
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RoomContainer/MeshInstance3D/StaticBody3D" unique_id=363378381]
 shape = SubResource("ConcavePolygonShape3D_fxdnj")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="RoomContainer" unique_id=466314270]
+transform = Transform3D(3.812865, 0, 0, 0, 2.3169017, 0, 0, 0, 0.09027481, 0, 0, -2.1562834)
+mesh = SubResource("BoxMesh_qdwo2")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="RoomContainer/MeshInstance3D2" unique_id=571966025]
+collision_layer = 9
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RoomContainer/MeshInstance3D2/StaticBody3D" unique_id=1337177176]
+shape = SubResource("ConcavePolygonShape3D_m5vm6")
 
 [node name="PlayerSpawn" type="Marker3D" parent="." unique_id=979479307]
 

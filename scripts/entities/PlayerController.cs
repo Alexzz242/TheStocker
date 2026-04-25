@@ -70,14 +70,15 @@ public partial class PlayerController : CharacterBody3D
 
 	private void HandleGrab()
 	{
-		// If already holding something, drop it
 		if (_heldItem != null)
 		{
 			HandleDrop();
 			return;
 		}
 
-		// Check what raycast is hitting
+		GD.Print("Ray hitting: ", _interactRay.IsColliding());
+		GD.Print("Collider: ", _interactRay.GetCollider());
+
 		if (_interactRay.IsColliding())
 		{
 			GodotObject collider = _interactRay.GetCollider();
@@ -94,7 +95,6 @@ public partial class PlayerController : CharacterBody3D
 	{
 		if (_heldItem == null) return;
 
-		// Drop into the warehouse root so item rejoins world physics
 		Node3D worldParent = GetTree().CurrentScene as Node3D;
 		_heldItem.Drop(worldParent);
 		_heldItem = null;

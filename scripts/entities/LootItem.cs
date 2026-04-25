@@ -12,21 +12,24 @@ public partial class LootItem : RigidBody3D
 	public bool IsHeld => _isHeld;
 	public bool IsScanned => _isScanned;
 
+	public override void _Ready()
+	{
+		// Layer 2 = loot, Mask 8 = layer 4 (environment)
+		CollisionLayer = 2;
+		CollisionMask = 8;
+	}
+
 	public void PickUp(Node3D holdPoint)
 	{
 		_isHeld = true;
-
-		// Disable physics while held
 		Freeze = true;
 		CollisionLayer = 0;
 		CollisionMask = 0;
 
-		// Reparent to hold point
 		Node currentParent = GetParent();
 		currentParent.RemoveChild(this);
 		holdPoint.AddChild(this);
 
-		// Sit at hold point center
 		Position = Vector3.Zero;
 		Rotation = Vector3.Zero;
 	}
@@ -35,27 +38,25 @@ public partial class LootItem : RigidBody3D
 	{
 		_isHeld = false;
 		_worldParent = worldParent;
-
-		// Defer the actual drop to avoid mid-frame physics issues
 		CallDeferred(nameof(FinalizeDrop));
 	}
 
 	private void FinalizeDrop()
 	{
-	Vector3 globalPos = GlobalPosition;
+		Vector3 globalPos = GlobalPosition;
 
-	Node currentParent = GetParent();
-	currentParent.RemoveChild(this);
-	_worldParent.AddChild(this);
+		Node currentParent = GetParent();
+		currentParent.RemoveChild(this);
+		_worldParent.AddChild(this);
 
-	GlobalPosition = globalPos;
+		GlobalPosition = globalPos;
 
-	// Layer 2 = loot (value 2), collide with layer 4 = environment (value 8)
-	Freeze = false;
-	CollisionLayer = 2;
-	CollisionMask = 8;
+		// Restore collision then unfreeze
+		CollisionLayer = 2;
+		CollisionMask = 8;
+		Freeze = false;
 
-	_worldParent = null;
+		_worldParent = null;
 	}
 
 	public void Scan()

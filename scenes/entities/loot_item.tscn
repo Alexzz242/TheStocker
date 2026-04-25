@@ -13,7 +13,7 @@ radius = 1.5
 
 [node name="LootItem" type="RigidBody3D" unique_id=1465051562]
 collision_layer = 2
-collision_mask = 9
+collision_mask = 8
 script = ExtResource("1_1ywed")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2004268191]
@@ -23,6 +23,7 @@ shape = SubResource("BoxShape3D_f602b")
 mesh = SubResource("BoxMesh_nen5j")
 
 [node name="InteractArea" type="Area3D" parent="." unique_id=410347542]
+collision_layer = 2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InteractArea" unique_id=1684796380]
 shape = SubResource("SphereShape3D_dy1k2")
