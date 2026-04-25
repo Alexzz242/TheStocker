@@ -1,14 +1,31 @@
 [gd_scene format=3 uid="uid://bw3loc5iwrcrc"]
 
+[ext_resource type="Script" uid="uid://budl1opxyxr65" path="res://scripts/entities/LootItem.cs" id="1_1ywed"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_f602b"]
+size = Vector3(0.3, 0.3, 0.3)
+
+[sub_resource type="BoxMesh" id="BoxMesh_nen5j"]
+size = Vector3(0.3, 0.3, 0.3)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_dy1k2"]
+radius = 1.5
+
 [node name="LootItem" type="RigidBody3D" unique_id=1465051562]
+collision_layer = 2
+collision_mask = 9
+script = ExtResource("1_1ywed")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2004268191]
+shape = SubResource("BoxShape3D_f602b")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=2061548444]
+mesh = SubResource("BoxMesh_nen5j")
 
 [node name="InteractArea" type="Area3D" parent="." unique_id=410347542]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InteractArea" unique_id=1684796380]
+shape = SubResource("SphereShape3D_dy1k2")
 
 [node name="BarcodeLocation" type="Marker3D" parent="." unique_id=884753710]
 
