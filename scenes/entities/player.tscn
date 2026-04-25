@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dgmcjmasssa2g"]
 
 [ext_resource type="Script" uid="uid://dpe0o184bjlii" path="res://scripts/entities/PlayerController.cs" id="1_ucweq"]
+[ext_resource type="Script" uid="uid://ccm1e8ae7eu1p" path="res://scripts/entities/Flashlight.cs" id="2_08t41"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0qees"]
 radius = 0.4
@@ -18,11 +19,20 @@ shape = SubResource("CapsuleShape3D_0qees")
 current = true
 
 [node name="FlashLight" type="SpotLight3D" parent="Head" unique_id=1791239514]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+light_energy = 2.0
+shadow_enabled = true
+spot_range = 20.0
+spot_attenuation = 0.5
+spot_angle = 25.0
+spot_angle_attenuation = 0.5
+script = ExtResource("2_08t41")
 
 [node name="InteractRay" type="RayCast3D" parent="Head" unique_id=1891611827]
-target_position = Vector3(0, 0, -2)
+target_position = Vector3(0, 0, -2.5)
 
 [node name="HoldPoint" type="Marker3D" parent="Head" unique_id=1946731607]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, -0.5)
 
 [node name="Hands" type="Node3D" parent="Head" unique_id=1026840915]
 

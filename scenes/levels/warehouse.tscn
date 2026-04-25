@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://ojftgcea5mvh"]
 
 [ext_resource type="PackedScene" uid="uid://dgmcjmasssa2g" path="res://scenes/entities/player.tscn" id="1_fxdnj"]
+[ext_resource type="PackedScene" uid="uid://bw3loc5iwrcrc" path="res://scenes/entities/loot_item.tscn" id="2_quuhf"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_quuhf"]
 
@@ -38,3 +39,6 @@ shape = SubResource("ConcavePolygonShape3D_fxdnj")
 
 [node name="Player" parent="." unique_id=1235616769 instance=ExtResource("1_fxdnj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00073599815, 0, 0.12098956)
+
+[node name="LootItem" parent="." unique_id=1465051562 instance=ExtResource("2_quuhf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.20563781, -0.8482131, -1.7979555)

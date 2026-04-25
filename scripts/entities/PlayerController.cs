@@ -2,23 +2,23 @@ using Godot;
 
 public partial class PlayerController : CharacterBody3D
 {
-	// Movement
 	[Export] public float WalkSpeed { get; set; } = 4.0f;
 	[Export] public float SprintSpeed { get; set; } = 7.0f;
 	[Export] public float Gravity { get; set; } = 9.8f;
-
-	// Mouse look
 	[Export] public float MouseSensitivity { get; set; } = 0.003f;
 	[Export] public float MaxLookAngle { get; set; } = 85.0f;
-
-	// Stamina
 	[Export] public float MaxStamina { get; set; } = 100.0f;
 	[Export] public float StaminaDrainRate { get; set; } = 20.0f;
 	[Export] public float StaminaRegenRate { get; set; } = 10.0f;
 	[Export] public float StaminaRegenDelay { get; set; } = 2.0f;
+	[Export] public float PickupRange { get; set; } = 2.5f;
 
-	// Private
 	private Node3D _head;
+	private Flashlight _flashlight;
+	private RayCast3D _interactRay;
+	private Marker3D _holdPoint;
+	private LootItem _heldItem = null;
+
 	private float _currentStamina;
 	private float _regenTimer;
 	private bool _isSprinting;
@@ -26,54 +26,91 @@ public partial class PlayerController : CharacterBody3D
 	public override void _Ready()
 	{
 		_head = GetNode<Node3D>("Head");
+		_flashlight = GetNode<Flashlight>("Head/FlashLight");
+		_interactRay = GetNode<RayCast3D>("Head/InteractRay");
+		_holdPoint = GetNode<Marker3D>("Head/HoldPoint");
 		_currentStamina = MaxStamina;
 		Input.MouseMode = Input.MouseModeEnum.Captured;
+
+		GetTree().Root.FocusEntered += () =>
+			Input.MouseMode = Input.MouseModeEnum.Captured;
 	}
 
 	public override void _Input(InputEvent @event)
-{
-	if (@event is InputEventMouseMotion mouseMotion &&
-		Input.MouseMode == Input.MouseModeEnum.Captured)
 	{
-		// Tell Godot this event is handled, stop it propagating
-		GetViewport().SetInputAsHandled();
+		if (@event is InputEventMouseMotion mouseMotion &&
+			Input.MouseMode == Input.MouseModeEnum.Captured)
+		{
+			GetViewport().SetInputAsHandled();
+			RotateY(-mouseMotion.Relative.X * MouseSensitivity);
+			float newRotation = _head.RotationDegrees.X
+				- mouseMotion.Relative.Y * Mathf.RadToDeg(MouseSensitivity);
+			newRotation = Mathf.Clamp(newRotation, -MaxLookAngle, MaxLookAngle);
+			_head.RotationDegrees = new Vector3(
+				newRotation,
+				_head.RotationDegrees.Y,
+				_head.RotationDegrees.Z);
+		}
 
-		// Left/right — rotate whole body
-		RotateY(-mouseMotion.Relative.X * MouseSensitivity);
+		if (@event is InputEventKey key && key.Pressed)
+		{
+			if (key.Keycode == Key.Escape)
+				Input.MouseMode = Input.MouseModeEnum.Visible;
 
-		// Up/down — rotate head only
-		float newRotation = _head.RotationDegrees.X
-			- mouseMotion.Relative.Y * Mathf.RadToDeg(MouseSensitivity);
-		newRotation = Mathf.Clamp(newRotation, -MaxLookAngle, MaxLookAngle);
-		_head.RotationDegrees = new Vector3(
-			newRotation,
-			_head.RotationDegrees.Y,
-			_head.RotationDegrees.Z);
+			if (Input.IsActionJustPressed("flashlight"))
+				_flashlight?.Toggle();
+
+			if (Input.IsActionJustPressed("grab"))
+				HandleGrab();
+
+			if (Input.IsActionJustPressed("drop"))
+				HandleDrop();
+		}
 	}
 
-	if (@event is InputEventKey key && key.Pressed &&
-		key.Keycode == Key.Escape)
+	private void HandleGrab()
 	{
-		Input.MouseMode = Input.MouseModeEnum.Visible;
+		// If already holding something, drop it
+		if (_heldItem != null)
+		{
+			HandleDrop();
+			return;
+		}
+
+		// Check what raycast is hitting
+		if (_interactRay.IsColliding())
+		{
+			GodotObject collider = _interactRay.GetCollider();
+			if (collider is LootItem item && !item.IsHeld)
+			{
+				_heldItem = item;
+				_heldItem.PickUp(_holdPoint);
+				GD.Print("Picked up: ", _heldItem.ItemName);
+			}
+		}
 	}
-}
+
+	private void HandleDrop()
+	{
+		if (_heldItem == null) return;
+
+		// Drop into the warehouse root so item rejoins world physics
+		Node3D worldParent = GetTree().CurrentScene as Node3D;
+		_heldItem.Drop(worldParent);
+		_heldItem = null;
+	}
 
 	public override void _PhysicsProcess(double delta)
 	{
 		float dt = (float)delta;
 		Vector3 velocity = Velocity;
 
-		// Gravity
 		if (!IsOnFloor())
 			velocity.Y -= Gravity * dt;
 
-		// Sprint check
 		_isSprinting = Input.IsActionPressed("sprint") && _currentStamina > 0;
-
-		// Stamina
 		HandleStamina(dt);
 
-		// Movement input
 		Vector2 inputDir = Input.GetVector(
 			"move_left", "move_right",
 			"move_forward", "move_back");
@@ -90,7 +127,6 @@ public partial class PlayerController : CharacterBody3D
 		}
 		else
 		{
-			// Snappy stop
 			velocity.X = 0;
 			velocity.Z = 0;
 		}
@@ -122,6 +158,16 @@ public partial class PlayerController : CharacterBody3D
 		}
 	}
 
-	// Other systems read stamina through this
 	public float GetStaminaPercent() => _currentStamina / MaxStamina;
+
+	public override void _ExitTree()
+	{
+		Input.MouseMode = Input.MouseModeEnum.Visible;
+	}
+
+	public override void _Notification(int what)
+	{
+		if (what == NotificationWMCloseRequest || what == NotificationCrash)
+			Input.MouseMode = Input.MouseModeEnum.Visible;
+	}
 }
