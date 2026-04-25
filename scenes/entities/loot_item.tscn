@@ -5,3 +5,11 @@
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2004268191]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=2061548444]
+
+[node name="InteractArea" type="Area3D" parent="." unique_id=410347542]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractArea" unique_id=1684796380]
+
+[node name="BarcodeLocation" type="Marker3D" parent="." unique_id=884753710]
+
+[node name="Barcode" type="MeshInstance3D" parent="." unique_id=1185493353]

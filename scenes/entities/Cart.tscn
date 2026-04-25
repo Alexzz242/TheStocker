@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://cg31k8jmg0c7u"]
+
+[node name="Cart" type="RigidBody3D" unique_id=1524045905]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1680873219]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1257252534]
+
+[node name="LoadArea" type="Area3D" parent="." unique_id=397970865]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LoadArea" unique_id=1284598691]
+
+[node name="GrabPoint" type="Marker3D" parent="." unique_id=775793897]
+
+[node name="ItemContainer" type="Node3D" parent="." unique_id=144474419]

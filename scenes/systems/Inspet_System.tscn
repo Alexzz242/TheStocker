@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://u00knpto5ngh"]
+
+[node name="InspetSystem" type="Node" unique_id=1780886553]
+
+[node name="SubViewport" type="SubViewport" parent="." unique_id=804737565]
+
+[node name="InspectCam" type="Camera3D" parent="SubViewport" unique_id=558558293]
+
+[node name="InspectUI" type="Control" parent="." unique_id=1315279603]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HintText" type="Label" parent="InspectUI" unique_id=2090097898]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
