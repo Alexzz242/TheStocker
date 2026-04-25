@@ -15,6 +15,7 @@ shape = SubResource("CapsuleShape3D_0qees")
 [node name="Head" type="Node3D" parent="." unique_id=1705645617]
 
 [node name="Camera3D" type="Camera3D" parent="Head" unique_id=595165549]
+current = true
 
 [node name="FlashLight" type="SpotLight3D" parent="Head" unique_id=1791239514]
 

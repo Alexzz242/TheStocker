@@ -30,32 +30,33 @@ public partial class PlayerController : CharacterBody3D
 		Input.MouseMode = Input.MouseModeEnum.Captured;
 	}
 
-	public override void _UnhandledInput(InputEvent @event)
+	public override void _Input(InputEvent @event)
+{
+	if (@event is InputEventMouseMotion mouseMotion &&
+		Input.MouseMode == Input.MouseModeEnum.Captured)
 	{
-		// Mouse look
-		if (@event is InputEventMouseMotion mouseMotion &&
-			Input.MouseMode == Input.MouseModeEnum.Captured)
-		{
-			// Left/right — rotate whole body
-			RotateY(-mouseMotion.Relative.X * MouseSensitivity);
+		// Tell Godot this event is handled, stop it propagating
+		GetViewport().SetInputAsHandled();
 
-			// Up/down — rotate head only
-			float newRotation = _head.RotationDegrees.X
-				- mouseMotion.Relative.Y * Mathf.RadToDeg(MouseSensitivity);
-			newRotation = Mathf.Clamp(newRotation, -MaxLookAngle, MaxLookAngle);
-			_head.RotationDegrees = new Vector3(
-				newRotation,
-				_head.RotationDegrees.Y,
-				_head.RotationDegrees.Z);
-		}
+		// Left/right — rotate whole body
+		RotateY(-mouseMotion.Relative.X * MouseSensitivity);
 
-		// Release mouse during dev
-		if (@event is InputEventKey key && key.Pressed &&
-			key.Keycode == Key.Escape)
-		{
-			Input.MouseMode = Input.MouseModeEnum.Visible;
-		}
+		// Up/down — rotate head only
+		float newRotation = _head.RotationDegrees.X
+			- mouseMotion.Relative.Y * Mathf.RadToDeg(MouseSensitivity);
+		newRotation = Mathf.Clamp(newRotation, -MaxLookAngle, MaxLookAngle);
+		_head.RotationDegrees = new Vector3(
+			newRotation,
+			_head.RotationDegrees.Y,
+			_head.RotationDegrees.Z);
 	}
+
+	if (@event is InputEventKey key && key.Pressed &&
+		key.Keycode == Key.Escape)
+	{
+		Input.MouseMode = Input.MouseModeEnum.Visible;
+	}
+}
 
 	public override void _PhysicsProcess(double delta)
 	{
