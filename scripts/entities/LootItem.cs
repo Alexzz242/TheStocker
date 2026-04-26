@@ -14,7 +14,6 @@ public partial class LootItem : RigidBody3D
 
 	public override void _Ready()
 	{
-		// Layer 2 = loot, Mask 8 = layer 4 (environment)
 		CollisionLayer = 2;
 		CollisionMask = 8;
 	}
@@ -51,12 +50,54 @@ public partial class LootItem : RigidBody3D
 
 		GlobalPosition = globalPos;
 
-		// Restore collision then unfreeze
 		CollisionLayer = 2;
 		CollisionMask = 8;
 		Freeze = false;
 
 		_worldParent = null;
+	}
+
+	public void StartInspect(Node3D inspectPoint)
+	{
+		Freeze = true;
+		CollisionLayer = 0;
+		CollisionMask = 0;
+
+		Node currentParent = GetParent();
+		currentParent.RemoveChild(this);
+		inspectPoint.AddChild(this);
+
+		Position = Vector3.Zero;
+		Rotation = Vector3.Zero;
+	}
+
+	public void StopInspect(Node3D worldParent)
+	{
+		_worldParent = worldParent;
+		CallDeferred(nameof(FinalizeStopInspect));
+	}
+
+	private void FinalizeStopInspect()
+	{
+	// Must save position BEFORE removing from parent
+	Vector3 globalPos = GlobalPosition;
+	Quaternion globalRot = GlobalTransform.Basis.GetRotationQuaternion();
+
+	Node currentParent = GetParent();
+	if (currentParent == null || _worldParent == null) return;
+
+	currentParent.RemoveChild(this);
+	_worldParent.AddChild(this);
+
+	GlobalPosition = globalPos;
+	// Reset rotation so item sits flat after inspect
+	Rotation = Vector3.Zero;
+
+	CollisionLayer = 2;
+	CollisionMask = 8;
+	Freeze = false;
+
+	_worldParent = null;
 	}
 
 	public void Scan()

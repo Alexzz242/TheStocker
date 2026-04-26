@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dkjllaoqbk4db" path="res://scripts/autoload/Main.cs" id="1_o5qli"]
 [ext_resource type="PackedScene" uid="uid://b7dlleimaugdm" path="res://scenes/ui/main_menu.tscn" id="2_0wfyh"]
+[ext_resource type="PackedScene" uid="uid://dt35gkcr3oj7m" path="res://scenes/ui/tsd_corner.tscn" id="3_sugp2"]
 
 [node name="Main" type="Node" unique_id=1276073212]
 script = ExtResource("1_o5qli")
@@ -10,3 +11,5 @@ MainMenuScene = ExtResource("2_0wfyh")
 [node name="CurrentLocation" type="Node" parent="." unique_id=1140688796]
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=288183009]
+
+[node name="TSDCorner" parent="UI" unique_id=1518024920 instance=ExtResource("3_sugp2")]

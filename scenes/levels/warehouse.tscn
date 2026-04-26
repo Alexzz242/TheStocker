@@ -3,6 +3,12 @@
 [ext_resource type="PackedScene" uid="uid://dgmcjmasssa2g" path="res://scenes/entities/player.tscn" id="1_fxdnj"]
 [ext_resource type="PackedScene" uid="uid://bw3loc5iwrcrc" path="res://scenes/entities/loot_item.tscn" id="2_quuhf"]
 
+[sub_resource type="Environment" id="Environment_quuhf"]
+background_mode = 1
+background_color = Color(0.37649247, 0.59144694, 0.6855718, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.5340543, 0.49427754, 0.52136475, 1)
+
 [sub_resource type="BoxMesh" id="BoxMesh_quuhf"]
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_fxdnj"]
@@ -16,8 +22,10 @@ data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0
 [node name="Warehouse" type="Node3D" unique_id=1326784515]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1391329945]
+environment = SubResource("Environment_quuhf")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1477612472]
+transform = Transform3D(1, 0, 0, 0, 0.9533172, 0.30197057, 0, -0.30197057, 0.9533172, 0, 0, 0)
 
 [node name="RoomContainer" type="Node3D" parent="." unique_id=1748281973]
 
@@ -53,8 +61,8 @@ shape = SubResource("ConcavePolygonShape3D_m5vm6")
 
 [node name="CartSpawn" type="Marker3D" parent="." unique_id=2127770447]
 
-[node name="Player" parent="." unique_id=1235616769 instance=ExtResource("1_fxdnj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00073599815, 0, 0.12098956)
-
 [node name="LootItem" parent="." unique_id=1465051562 instance=ExtResource("2_quuhf")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.20563781, -0.8482131, -1.7979555)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.20563781, -0.08610195, -1.7979555)
+
+[node name="Player" parent="." unique_id=1235616769 instance=ExtResource("1_fxdnj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.04133618, -0.48876262, 0.24478924)
