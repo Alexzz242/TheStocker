@@ -1,0 +1,57 @@
+[gd_scene format=3 uid="uid://dt35gkcr3oj7m"]
+
+[ext_resource type="Script" uid="uid://0v4pxt072rmk" path="res://scripts/ui/TsdCornerUi.cs" id="1_xkq7w"]
+
+[node name="TSDCorner" type="Control" unique_id=1518024920 node_paths=PackedStringArray("TsdPanel", "ScanPrompt", "ScanFlash")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_xkq7w")
+TsdPanel = NodePath("TSDPanel")
+ScanPrompt = NodePath("TSDPanel/ScanPromt")
+ScanFlash = NodePath("ColorRect")
+
+[node name="TSDPanel" type="Panel" parent="." unique_id=142317719]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -250.0
+offset_top = -148.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="TSDIcon" type="TextureRect" parent="TSDPanel" unique_id=1343524109]
+layout_mode = 0
+offset_left = 73.0
+offset_top = 51.0
+offset_right = 152.0
+offset_bottom = 96.0
+
+[node name="ScanPromt" type="Label" parent="TSDPanel" unique_id=1172818320]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -141.0
+offset_top = -84.0
+offset_right = -98.0
+offset_bottom = -61.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "SCAN"
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=736303093]
+layout_mode = 0
+offset_left = 1681.0
+offset_top = 976.0
+offset_right = 1756.0
+offset_bottom = 1039.0
+color = Color(0.11454082, 0.7169544, 1.540184e-06, 1)
