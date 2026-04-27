@@ -14,9 +14,23 @@ public partial class TsdCornerUi : Control
 	public override void _Ready()
 	{
 		Visible = false;
+
+		// Root control ignores mouse completely
+		MouseFilter = MouseFilterEnum.Ignore;
+
 		ScanFlash.Visible = false;
 		ScanFlash.Color = new Color(0, 1, 0, 0.4f);
 		ScanPrompt.Text = "SCAN";
+
+		// Only TsdPanel catches clicks
+		TsdPanel.MouseFilter = MouseFilterEnum.Stop;
+
+		TsdPanel.GuiInput += (InputEvent e) =>
+		{
+			if (e is InputEventMouseButton mb &&
+				mb.ButtonIndex == MouseButton.Left && mb.Pressed)
+				OnTsdClicked();
+		};
 	}
 
 	public override void _Process(double delta)
@@ -37,10 +51,18 @@ public partial class TsdCornerUi : Control
 		ScanFlash.Visible = false;
 	}
 
-	public void Hide()
+	public new void Hide()
 	{
 		Visible = false;
 		_scanModeActive = false;
+		// Stop intercepting input when hidden
+		TsdPanel.MouseFilter = MouseFilterEnum.Ignore;
+	}
+
+	public void ShowTsdPanel()
+	{
+		Visible = true;
+		TsdPanel.MouseFilter = MouseFilterEnum.Stop;
 	}
 
 	public bool IsScanModeActive() => _scanModeActive;

@@ -7,9 +7,8 @@ size = Vector3(0.4, 0.1, 0.2)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1ywed"]
 albedo_color = Color(0.7162814, 0, 0.11347329, 1)
-emission_enabled = true
 emission = Color(0.22813866, 0.41573414, 1, 1)
-emission_energy_multiplier = 3.91
+emission_energy_multiplier = 4.41
 
 [sub_resource type="BoxMesh" id="BoxMesh_1ywed"]
 material = SubResource("StandardMaterial3D_1ywed")
@@ -17,6 +16,10 @@ size = Vector3(0.4, 0.1, 0.2)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_dy1k2"]
 radius = 1.5
+
+[sub_resource type="BoxMesh" id="BoxMesh_f602b"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dy1k2"]
 
 [node name="LootItem" type="RigidBody3D" unique_id=1465051562]
 collision_layer = 2
@@ -38,3 +41,12 @@ shape = SubResource("SphereShape3D_dy1k2")
 [node name="BarcodeLocation" type="Marker3D" parent="." unique_id=884753710]
 
 [node name="Barcode" type="MeshInstance3D" parent="." unique_id=1185493353]
+transform = Transform3D(-0.091222405, 0, 0, 0, 0.02508188, 0, 0, 0, 0.040053595, 0.1494085, 0.058378547, 0.060274854)
+mesh = SubResource("BoxMesh_f602b")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Barcode" unique_id=85807825]
+collision_layer = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Barcode/StaticBody3D" unique_id=1367791909]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2031765, 0)
+shape = SubResource("BoxShape3D_dy1k2")

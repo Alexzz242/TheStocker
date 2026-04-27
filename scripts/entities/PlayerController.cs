@@ -14,7 +14,6 @@ public partial class PlayerController : CharacterBody3D
 	[Export] public float PickupRange { get; set; } = 2.5f;
 	[Export] public float InspectRotateSpeed { get; set; } = 0.01f;
 
-	// Node refs
 	private Node3D _head;
 	private Flashlight _flashlight;
 	private RayCast3D _interactRay;
@@ -23,7 +22,6 @@ public partial class PlayerController : CharacterBody3D
 	private Camera3D _camera;
 	private TsdCornerUi _tsdCornerUi;
 
-	// State
 	private LootItem _heldItem = null;
 	private LootItem _inspectedItem = null;
 	private bool _isInspecting = false;
@@ -42,7 +40,6 @@ public partial class PlayerController : CharacterBody3D
 		_inspectPoint = GetNode<Marker3D>("Head/InspectPoint");
 		_camera = GetNode<Camera3D>("Head/Camera3D");
 
-		// TSD UI lives in main UI — find it in the tree
 		_tsdCornerUi = GetTree().Root.FindChild("TSDCorner", true, false) as TsdCornerUi;
 
 		_currentStamina = MaxStamina;
@@ -60,14 +57,12 @@ public partial class PlayerController : CharacterBody3D
 
 	public override void _Input(InputEvent @event)
 	{
-		// ---- INSPECT MODE INPUT ----
 		if (_isInspecting)
 		{
 			HandleInspectInput(@event);
 			return;
 		}
 
-		// ---- NORMAL MODE INPUT ----
 		if (@event is InputEventMouseMotion mouseMotion &&
 			Input.MouseMode == Input.MouseModeEnum.Captured)
 		{
@@ -103,7 +98,6 @@ public partial class PlayerController : CharacterBody3D
 
 	private void HandleInspectInput(InputEvent @event)
 	{
-		// Exit inspect
 		if (@event is InputEventKey key && key.Pressed)
 		{
 			if (key.Keycode == Key.Escape ||
@@ -114,14 +108,11 @@ public partial class PlayerController : CharacterBody3D
 			}
 		}
 
-		// Left click on TSD corner UI — handled by UI itself via OnTsdClicked()
-		// Left click drag to rotate item
 		if (@event is InputEventMouseButton mouseBtn)
 		{
 			if (mouseBtn.ButtonIndex == MouseButton.Left)
 				_isDragging = mouseBtn.Pressed;
 
-			// Scan click — only when scan mode active and left clicking
 			if (mouseBtn.ButtonIndex == MouseButton.Left &&
 				mouseBtn.Pressed &&
 				_tsdCornerUi != null &&
@@ -132,17 +123,17 @@ public partial class PlayerController : CharacterBody3D
 			}
 		}
 
-		// Rotate item with drag
 		if (@event is InputEventMouseMotion motion && _isDragging)
 		{
 			if (_inspectedItem != null)
 			{
-				_inspectedItem.RotateObjectLocal(
-					new Vector3(0, 1, 0),
-					-motion.Relative.X * InspectRotateSpeed);
-				_inspectedItem.RotateObjectLocal(
-					new Vector3(1, 0, 0),
-					-motion.Relative.Y * InspectRotateSpeed);
+				_inspectedItem.GlobalRotate(
+					_camera.GlobalTransform.Basis.Y,
+					motion.Relative.X * InspectRotateSpeed);
+
+				_inspectedItem.GlobalRotate(
+					_camera.GlobalTransform.Basis.X,
+					motion.Relative.Y * InspectRotateSpeed);
 			}
 		}
 	}
@@ -151,7 +142,6 @@ public partial class PlayerController : CharacterBody3D
 	{
 		if (_camera == null || _inspectedItem == null) return;
 
-		// Cast ray from mouse position into 3D
 		Vector2 mousePos = GetViewport().GetMousePosition();
 		PhysicsRayQueryParameters3D rayParams = PhysicsRayQueryParameters3D.Create(
 			_camera.ProjectRayOrigin(mousePos),
@@ -166,18 +156,22 @@ public partial class PlayerController : CharacterBody3D
 			GodotObject hit = result["collider"].AsGodotObject();
 			GD.Print("Clicked on: ", hit);
 
-			// Check if we hit the barcode mesh or its parent item
-			Node hitNode = hit as Node;
-			if (hitNode != null && (hitNode == _inspectedItem ||
-				hitNode.GetParent() == _inspectedItem ||
-				hitNode.Name.ToString().ToLower().Contains("barcode")))
+			// Walk up parent chain to check if we hit anything belonging to inspected item
+			Node current = hit as Node;
+			while (current != null)
 			{
-				ScanSuccess();
+				if (current == _inspectedItem)
+				{
+					ScanSuccess();
+					return;
+				}
+				current = current.GetParent();
 			}
-			else
-			{
-				GD.Print("Missed barcode — rotate item to find it");
-			}
+			GD.Print("Missed barcode — rotate item to find it");
+		}
+		else
+		{
+			GD.Print("Ray hit nothing");
 		}
 	}
 
@@ -187,7 +181,6 @@ public partial class PlayerController : CharacterBody3D
 		_tsdCornerUi?.PlayScanSuccess();
 		GD.Print("BEEP — scanned: ", _inspectedItem.ItemName);
 
-		// After scan, item goes to hands automatically
 		LootItem scanned = _inspectedItem;
 		_inspectedItem = null;
 		_isInspecting = false;
@@ -196,7 +189,6 @@ public partial class PlayerController : CharacterBody3D
 		Input.MouseMode = Input.MouseModeEnum.Captured;
 		_tsdCornerUi?.Hide();
 
-		// Put in hands
 		scanned.StopInspect(GetTree().CurrentScene as Node3D);
 		CallDeferred(nameof(PickUpAfterScan), scanned);
 	}
@@ -225,12 +217,10 @@ public partial class PlayerController : CharacterBody3D
 		_isDragging = false;
 
 		item.StartInspect(_inspectPoint);
-
-		// Show cursor for inspect interaction
 		Input.MouseMode = Input.MouseModeEnum.Visible;
 
-		// Show TSD corner UI
 		_tsdCornerUi?.ShowForInspect();
+		_tsdCornerUi?.ShowTsdPanel();
 
 		GD.Print("Inspect mode: ", item.ItemName);
 	}
