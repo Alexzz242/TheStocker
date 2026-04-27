@@ -2,12 +2,12 @@
 
 [ext_resource type="PackedScene" uid="uid://dgmcjmasssa2g" path="res://scenes/entities/player.tscn" id="1_fxdnj"]
 [ext_resource type="PackedScene" uid="uid://bw3loc5iwrcrc" path="res://scenes/entities/loot_item.tscn" id="2_quuhf"]
+[ext_resource type="PackedScene" uid="uid://dt35gkcr3oj7m" path="res://scenes/ui/tsd_corner.tscn" id="3_qdwo2"]
 
 [sub_resource type="Environment" id="Environment_quuhf"]
 background_mode = 1
 background_color = Color(0.37649247, 0.59144694, 0.6855718, 1)
-ambient_light_source = 2
-ambient_light_color = Color(0.5340543, 0.49427754, 0.52136475, 1)
+ambient_light_source = 3
 
 [sub_resource type="BoxMesh" id="BoxMesh_quuhf"]
 
@@ -30,7 +30,7 @@ transform = Transform3D(1, 0, 0, 0, 0.9533172, 0.30197057, 0, -0.30197057, 0.953
 [node name="RoomContainer" type="Node3D" parent="." unique_id=1748281973]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="RoomContainer" unique_id=692688651]
-transform = Transform3D(4.0667553, 0, 0, 0, 0.123699546, 0, 0, 0, 4.484905, 0, -1.0600629, 0)
+transform = Transform3D(5.671301, 0, 0, 0, 0.123699546, 0, 0, 0, 6.2897997, 0, -1.0600629, -0.7355118)
 mesh = SubResource("BoxMesh_quuhf")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="RoomContainer/MeshInstance3D" unique_id=1330558052]
@@ -49,6 +49,16 @@ collision_layer = 9
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RoomContainer/MeshInstance3D2/StaticBody3D" unique_id=1337177176]
 shape = SubResource("ConcavePolygonShape3D_m5vm6")
 
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="RoomContainer" unique_id=1699684668]
+transform = Transform3D(0.2681462, 0, 0, 0, 0.26890242, 0, 0, 0, 0.48240244, -0.3636896, -0.8952705, -1.6065784)
+mesh = SubResource("BoxMesh_qdwo2")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="RoomContainer/MeshInstance3D3" unique_id=189789221]
+collision_layer = 9
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RoomContainer/MeshInstance3D3/StaticBody3D" unique_id=763891451]
+shape = SubResource("ConcavePolygonShape3D_m5vm6")
+
 [node name="PlayerSpawn" type="Marker3D" parent="." unique_id=979479307]
 
 [node name="EnemySpawn" type="Node3D" parent="." unique_id=1222875960]
@@ -62,7 +72,14 @@ shape = SubResource("ConcavePolygonShape3D_m5vm6")
 [node name="CartSpawn" type="Marker3D" parent="." unique_id=2127770447]
 
 [node name="LootItem" parent="." unique_id=1465051562 instance=ExtResource("2_quuhf")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.20563781, -0.08610195, -1.7979555)
+transform = Transform3D(0.86715764, 0, -0.49803373, 0, 1, 0, 0.49803373, 0, 0.86715764, -0.3703125, -0.18752432, -1.5754694)
+
+[node name="LootItem2" parent="." unique_id=1541110572 instance=ExtResource("2_quuhf")]
+transform = Transform3D(0.9285378, 0, 0.37123826, 0, 1, 0, -0.37123826, 0, 0.9285378, 0.49543196, 0.17903966, -1.5754694)
 
 [node name="Player" parent="." unique_id=1235616769 instance=ExtResource("1_fxdnj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.04133618, -0.48876262, 0.24478924)
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=2132818150]
+
+[node name="TSDCorner" parent="HUD" unique_id=1518024920 instance=ExtResource("3_qdwo2")]
