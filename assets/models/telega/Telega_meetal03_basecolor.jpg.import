@@ -2,23 +2,24 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://chvo5hwra2inl"
-path="res://.godot/imported/Telega_meetal02_specular.jpg-c71aced1f8416bac465b1f2356fce9b5.ctex"
+uid="uid://bbdl18at5f3xk"
+path.s3tc="res://.godot/imported/Telega_meetal03_basecolor.jpg-82894cb2ded04fe3e70214bd04f08314.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
-"md5": "40e370956819cadf7bdaa7cdbe4f3679"
+"md5": "9af6e674a12776161ad85189b04bf8be"
 }
 
 [deps]
 
-source_file="res://assets/models/Telega_meetal02_specular.jpg"
-dest_files=["res://.godot/imported/Telega_meetal02_specular.jpg-c71aced1f8416bac465b1f2356fce9b5.ctex"]
+source_file="res://assets/models/telega/Telega_meetal03_basecolor.jpg"
+dest_files=["res://.godot/imported/Telega_meetal03_basecolor.jpg-82894cb2ded04fe3e70214bd04f08314.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +41,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

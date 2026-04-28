@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://bopj1kp3eogt2"
-path="res://.godot/imported/Telega.glb-19ad16d292e56b08a6fec3b60632e844.scn"
+path="res://.godot/imported/Telega.glb-d33f413f6d39749905bf1c71dde1ceeb.scn"
 
 [deps]
 
-source_file="res://assets/models/Telega.glb"
-dest_files=["res://.godot/imported/Telega.glb-19ad16d292e56b08a6fec3b60632e844.scn"]
+source_file="res://assets/models/telega/Telega.glb"
+dest_files=["res://.godot/imported/Telega.glb-d33f413f6d39749905bf1c71dde1ceeb.scn"]
 
 [params]
 

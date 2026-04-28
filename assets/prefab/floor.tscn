@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://c78x1mw3rd40q"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_eudp1"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_eudp1"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ytus3"]
+size = Vector3(131.29904, 1, 143.11462)
+
+[node name="Floor" type="Node3D" unique_id=1766504006]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=568408487]
+physics_material_override = SubResource("PhysicsMaterial_eudp1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D" unique_id=565159689]
+transform = Transform3D(131.30096, 0, 0, 0, 1, 0, 0, 0, 143.10094, 0, 0, 0)
+mesh = SubResource("BoxMesh_eudp1")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=76337817]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0031585693, 0, 0.0037231445)
+shape = SubResource("BoxShape3D_ytus3")

@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://c23cvnusv5yt8"]
+
+[ext_resource type="Script" uid="uid://2mt3uigg13r0" path="res://scenes/levels/WarehouseBob.cs" id="1_o1qgh"]
+[ext_resource type="PackedScene" uid="uid://dgmcjmasssa2g" path="res://scenes/entities/player.tscn" id="2_a0bnq"]
+[ext_resource type="PackedScene" uid="uid://c78x1mw3rd40q" path="res://assets/prefab/floor.tscn" id="2_p3ihn"]
+[ext_resource type="PackedScene" uid="uid://cvwjw0wkr0pg7" path="res://assets/prefab/Shelves.tscn" id="4_qqqwo"]
+
+[sub_resource type="Environment" id="Environment_quuhf"]
+background_mode = 1
+background_color = Color(0.37649247, 0.59144694, 0.6855718, 1)
+ambient_light_source = 3
+
+[node name="Warehouse" type="Node3D" unique_id=1326784515]
+script = ExtResource("1_o1qgh")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1391329945]
+environment = SubResource("Environment_quuhf")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1477612472]
+transform = Transform3D(1, 0, 0, 0, 0.5004232, 0.86578095, 0, -0.86578095, 0.5004232, 2.3174114, 4.55585, -4.7190237)
+
+[node name="Player" parent="." unique_id=1235616769 instance=ExtResource("2_a0bnq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.04133618, 1.8648503, 0.24478924)
+
+[node name="LevelObjects" type="Node3D" parent="." unique_id=246941737]
+
+[node name="Floor" parent="LevelObjects" unique_id=1766504006 instance=ExtResource("2_p3ihn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10997224, -0.019029379, 0.0599519)
+
+[node name="ShelvesOnLevel" type="Node3D" parent="LevelObjects" unique_id=1464388090]
+
+[node name="Shelves_1" parent="LevelObjects/ShelvesOnLevel" unique_id=92659123 instance=ExtResource("4_qqqwo")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -64.800644, 2.5581667, 69.842415)
+
+[node name="Shelves_2" parent="LevelObjects/ShelvesOnLevel" unique_id=1058440982 instance=ExtResource("4_qqqwo")]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -134.64307, 5.1163335, 5.041771)

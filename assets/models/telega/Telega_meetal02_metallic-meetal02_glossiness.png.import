@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c00se04j6lvl8"
-path.s3tc="res://.godot/imported/Telega_meetal02_metallic-meetal02_glossiness.png-0982aea681f459af036729f6d2558815.s3tc.ctex"
+path.s3tc="res://.godot/imported/Telega_meetal02_metallic-meetal02_glossiness.png-8ff53a81dfaeee479b0c991a5dbdc6bf.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -14,8 +14,8 @@ generator_parameters={
 
 [deps]
 
-source_file="res://assets/models/Telega_meetal02_metallic-meetal02_glossiness.png"
-dest_files=["res://.godot/imported/Telega_meetal02_metallic-meetal02_glossiness.png-0982aea681f459af036729f6d2558815.s3tc.ctex"]
+source_file="res://assets/models/telega/Telega_meetal02_metallic-meetal02_glossiness.png"
+dest_files=["res://.godot/imported/Telega_meetal02_metallic-meetal02_glossiness.png-8ff53a81dfaeee479b0c991a5dbdc6bf.s3tc.ctex"]
 
 [params]
 
