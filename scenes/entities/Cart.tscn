@@ -1,14 +1,35 @@
 [gd_scene format=3 uid="uid://cg31k8jmg0c7u"]
 
+[ext_resource type="Script" uid="uid://byk8vtyj0kipf" path="res://scripts/entities/Cart.cs" id="1_jqd3e"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_rbvig"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jqd3e"]
+size = Vector3(0.63290405, 0.5409546, 2.2711182)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_u7y7v"]
+size = Vector3(0.5140381, 0.56677246, 2.1891785)
+
 [node name="Cart" type="RigidBody3D" unique_id=1524045905]
+collision_layer = 9
+collision_mask = 8
+script = ExtResource("1_jqd3e")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1680873219]
+transform = Transform3D(0.59746933, 0, 0, 0, 0.4720407, 0, 0, 0, 2.2140336, 0, 0, 0)
+mesh = SubResource("BoxMesh_rbvig")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1257252534]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.009628296, 0.017486572, 0.009094238)
+shape = SubResource("BoxShape3D_jqd3e")
 
 [node name="LoadArea" type="Area3D" parent="." unique_id=397970865]
+collision_layer = 8
+collision_mask = 2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LoadArea" unique_id=1284598691]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0036010742, 0.0602417, -0.0006866455)
+shape = SubResource("BoxShape3D_u7y7v")
 
 [node name="GrabPoint" type="Marker3D" parent="." unique_id=775793897]
 

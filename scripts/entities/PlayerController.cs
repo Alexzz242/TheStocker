@@ -24,6 +24,7 @@ public partial class PlayerController : CharacterBody3D
 
 	private LootItem _heldItem = null;
 	private LootItem _inspectedItem = null;
+	private Cart _grabbedCart = null;
 	private bool _isInspecting = false;
 	private bool _isDragging = false;
 
@@ -86,7 +87,14 @@ public partial class PlayerController : CharacterBody3D
 				_flashlight?.Toggle();
 
 			if (Input.IsActionJustPressed("grab"))
-				HandleGrab();
+			{
+				// Check if looking at cart or already grabbing cart
+				if (_grabbedCart != null ||
+					(_interactRay.IsColliding() && _interactRay.GetCollider() is Cart))
+					HandleCartGrab();
+				else
+					HandleGrab();
+			}
 
 			if (Input.IsActionJustPressed("drop"))
 				HandleDrop();
@@ -156,7 +164,6 @@ public partial class PlayerController : CharacterBody3D
 			GodotObject hit = result["collider"].AsGodotObject();
 			GD.Print("Clicked on: ", hit);
 
-			// Walk up parent chain to check if we hit anything belonging to inspected item
 			Node current = hit as Node;
 			while (current != null)
 			{
@@ -240,6 +247,26 @@ public partial class PlayerController : CharacterBody3D
 		_tsdCornerUi?.Hide();
 
 		GD.Print("Exited inspect");
+	}
+
+	private void HandleCartGrab()
+	{
+		if (_grabbedCart != null)
+		{
+			_grabbedCart.Release();
+			_grabbedCart = null;
+			return;
+		}
+
+		if (_interactRay.IsColliding())
+		{
+			GodotObject collider = _interactRay.GetCollider();
+			if (collider is Cart cart)
+			{
+				_grabbedCart = cart;
+				cart.Grab(this);
+			}
+		}
 	}
 
 	private void HandleGrab()

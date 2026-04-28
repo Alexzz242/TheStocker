@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://dgmcjmasssa2g" path="res://scenes/entities/player.tscn" id="1_fxdnj"]
 [ext_resource type="PackedScene" uid="uid://bw3loc5iwrcrc" path="res://scenes/entities/loot_item.tscn" id="2_quuhf"]
 [ext_resource type="PackedScene" uid="uid://dt35gkcr3oj7m" path="res://scenes/ui/tsd_corner.tscn" id="3_qdwo2"]
+[ext_resource type="PackedScene" uid="uid://cg31k8jmg0c7u" path="res://scenes/entities/Cart.tscn" id="4_m5vm6"]
 
 [sub_resource type="Environment" id="Environment_quuhf"]
 background_mode = 1
@@ -83,3 +84,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.04133618, -0.48876262, 0.24
 [node name="HUD" type="CanvasLayer" parent="." unique_id=2132818150]
 
 [node name="TSDCorner" parent="HUD" unique_id=1518024920 instance=ExtResource("3_qdwo2")]
+
+[node name="Cart" parent="." unique_id=1524045905 instance=ExtResource("4_m5vm6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.020596, -0.67234254, 0)
