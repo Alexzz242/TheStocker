@@ -7,6 +7,8 @@
 radius = 0.4
 height = 1.8
 
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_08t41"]
+
 [node name="Player" type="CharacterBody3D" unique_id=1235616769]
 script = ExtResource("1_ucweq")
 
@@ -46,3 +48,7 @@ collision_mask = 3
 
 [node name="InspectPoint" type="Marker3D" parent="Head" unique_id=1850657856]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1809902003]
+transform = Transform3D(0.8027994, 0, 0, 0, 0.9151529, 0, 0, 0, 0.80209494, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_08t41")
