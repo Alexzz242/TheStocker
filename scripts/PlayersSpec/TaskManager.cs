@@ -21,7 +21,6 @@ public partial class TaskManager : Area3D
 	private void DetectShelves(CollisionShape3D _sphere)
 	{
 		AddChild(_sphere);
-
 	}
 
 	private CollisionShape3D CreateCircle()
