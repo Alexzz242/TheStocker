@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public partial class TaskManager : Area3D
 {
 	private Node3D _targetNode;
-	private List<Node3D> _detectedShelves;
+	private List<Node3D> _detectedShelves = new List<Node3D>();
 	private float _radius = 10.0f;
 
 	public TaskManager(Node3D target)
@@ -21,6 +21,8 @@ public partial class TaskManager : Area3D
 	private void DetectShelves(CollisionShape3D _sphere)
 	{
 		AddChild(_sphere);
+		BodyEntered += OnBodyEntered;
+
 	}
 
 	private CollisionShape3D CreateCircle()
@@ -33,5 +35,11 @@ public partial class TaskManager : Area3D
 		return _collisionShape;
 	}
 
-
+	private void OnBodyEntered(Node3D body)
+	{
+	    if(body.Name.ToString().StartsWith("Shelves"))
+	    {
+	        _detectedShelves.Add(body);
+	    }
+	}
 }
