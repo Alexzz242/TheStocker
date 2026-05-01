@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public partial class TaskManager : Area3D
 {
-	private Node3D _targetNode;
+	private Node3D _playerNode;
 	private List<Node3D> _detectedShelves = new List<Node3D>();
 	private float _radius = 10.0f;
 
@@ -15,14 +15,22 @@ public partial class TaskManager : Area3D
 
 	public void GetNewTask()
 	{
-
+	    if(_detectedShelves.Count == 0)
+	    {
+	        GD.Print("No detected shelves");
+	        return;
+	    }
+		
+	    Random rnd = new Random();
+	    int index = rnd.Next(_detectedShelves.Count);
+		
+	    
 	}
 
 	private void DetectShelves(CollisionShape3D _sphere)
 	{
 		AddChild(_sphere);
 		BodyEntered += OnBodyEntered;
-
 	}
 
 	private CollisionShape3D CreateCircle()
