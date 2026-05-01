@@ -2,381 +2,411 @@ using Godot;
 
 public partial class PlayerController : CharacterBody3D
 {
-	[Export] public float WalkSpeed { get; set; } = 4.0f;
-	[Export] public float SprintSpeed { get; set; } = 7.0f;
-	[Export] public float Gravity { get; set; } = 9.8f;
-	[Export] public float MouseSensitivity { get; set; } = 0.003f;
-	[Export] public float MaxLookAngle { get; set; } = 85.0f;
-	[Export] public float MaxStamina { get; set; } = 100.0f;
-	[Export] public float StaminaDrainRate { get; set; } = 20.0f;
-	[Export] public float StaminaRegenRate { get; set; } = 10.0f;
-	[Export] public float StaminaRegenDelay { get; set; } = 2.0f;
-	[Export] public float PickupRange { get; set; } = 2.5f;
-	[Export] public float InspectRotateSpeed { get; set; } = 0.01f;
+    [Export] public float WalkSpeed { get; set; } = 4.0f;
+    [Export] public float SprintSpeed { get; set; } = 7.0f;
+    [Export] public float Gravity { get; set; } = 9.8f;
+    [Export] public float MouseSensitivity { get; set; } = 0.003f;
+    [Export] public float MaxLookAngle { get; set; } = 85.0f;
+    [Export] public float MaxStamina { get; set; } = 100.0f;
+    [Export] public float StaminaDrainRate { get; set; } = 20.0f;
+    [Export] public float StaminaRegenRate { get; set; } = 10.0f;
+    [Export] public float StaminaRegenDelay { get; set; } = 2.0f;
+    [Export] public float PickupRange { get; set; } = 2.5f;
+    [Export] public float InspectRotateSpeed { get; set; } = 0.01f;
 
-	private Node3D _head;
-	private Flashlight _flashlight;
-	private RayCast3D _interactRay;
-	private Marker3D _holdPoint;
-	private Marker3D _inspectPoint;
-	private Camera3D _camera;
-	private TsdCornerUi _tsdCornerUi;
+    private Node3D _head;
+    private Flashlight _flashlight;
+    private RayCast3D _interactRay;
+    private Marker3D _holdPoint;
+    private Marker3D _inspectPoint;
+    private Camera3D _camera;
+    private TsdCornerUi _tsdCornerUi;
 
-	private LootItem _heldItem = null;
-	private LootItem _inspectedItem = null;
-	private Cart _grabbedCart = null;
-	private bool _isInspecting = false;
-	private bool _isDragging = false;
+    private LootItem _heldItem = null;
+    private LootItem _inspectedItem = null;
+    private Cart _grabbedCart = null;
+    private bool _isInspecting = false;
+    private bool _isDragging = false;
 
-	private float _currentStamina;
-	private float _regenTimer;
-	private bool _isSprinting;
+    private float _currentStamina;
+    private float _regenTimer;
+    private bool _isSprinting;
+    private TaskManager _taskManager;
 
-	public override void _Ready()
-	{
-		_head = GetNode<Node3D>("Head");
-		_flashlight = GetNode<Flashlight>("Head/FlashLight");
-		_interactRay = GetNode<RayCast3D>("Head/InteractRay");
-		_holdPoint = GetNode<Marker3D>("Head/HoldPoint");
-		_inspectPoint = GetNode<Marker3D>("Head/InspectPoint");
-		_camera = GetNode<Camera3D>("Head/Camera3D");
+    public override void _Ready()
+    {
+        _head = GetNode<Node3D>("Head");
+        _flashlight = GetNode<Flashlight>("Head/FlashLight");
+        _interactRay = GetNode<RayCast3D>("Head/InteractRay");
+        _holdPoint = GetNode<Marker3D>("Head/HoldPoint");
+        _inspectPoint = GetNode<Marker3D>("Head/InspectPoint");
+        _camera = GetNode<Camera3D>("Head/Camera3D");
 
-		_tsdCornerUi = GetTree().Root.FindChild("TSDCorner", true, false) as TsdCornerUi;
+        _taskManager = new TaskManager(_head);
+        _head.AddChild(_taskManager);
 
-		_currentStamina = MaxStamina;
-		Input.MouseMode = Input.MouseModeEnum.Captured;
+        _tsdCornerUi = GetTree().Root.FindChild("TSDCorner", true, false) as TsdCornerUi;
 
-		GetTree().Root.FocusExited += () =>
-			Input.MouseMode = Input.MouseModeEnum.Visible;
+        _currentStamina = MaxStamina;
+        Input.MouseMode = Input.MouseModeEnum.Captured;
 
-		GetTree().Root.FocusEntered += () =>
-		{
-			if (!GetTree().Paused)
-				Input.MouseMode = Input.MouseModeEnum.Captured;
-		};
-	}
+        GetTree().Root.FocusExited += () =>
+            Input.MouseMode = Input.MouseModeEnum.Visible;
 
-	public override void _Input(InputEvent @event)
-	{
-		if (_isInspecting)
-		{
-			HandleInspectInput(@event);
-			return;
-		}
+        GetTree().Root.FocusEntered += () =>
+        {
+            if (!GetTree().Paused)
+                Input.MouseMode = Input.MouseModeEnum.Captured;
+        };
+    }
 
-		if (@event is InputEventMouseMotion mouseMotion &&
-			Input.MouseMode == Input.MouseModeEnum.Captured)
-		{
-			GetViewport().SetInputAsHandled();
-			RotateY(-mouseMotion.Relative.X * MouseSensitivity);
-			float newRotation = _head.RotationDegrees.X
-				- mouseMotion.Relative.Y * Mathf.RadToDeg(MouseSensitivity);
-			newRotation = Mathf.Clamp(newRotation, -MaxLookAngle, MaxLookAngle);
-			_head.RotationDegrees = new Vector3(
-				newRotation,
-				_head.RotationDegrees.Y,
-				_head.RotationDegrees.Z);
-		}
+    public override void _Input(InputEvent @event)
+    {
+        if (_isInspecting)
+        {
+            HandleInspectInput(@event);
+            return;
+        }
 
-		if (@event is InputEventKey key && key.Pressed)
-		{
-			if (key.Keycode == Key.Escape)
-				Input.MouseMode = Input.MouseModeEnum.Visible;
+        if (Input.IsActionJustPressed("interact") && _taskManager.HasTask) // when press interact check is this right shelf
+        {
+            CompleteTask();
+        }
 
-			if (Input.IsActionJustPressed("flashlight"))
-				_flashlight?.Toggle();
+        if (@event is InputEventMouseMotion mouseMotion &&
+        Input.MouseMode == Input.MouseModeEnum.Captured)
+        {
+            GetViewport().SetInputAsHandled();
+            RotateY(-mouseMotion.Relative.X * MouseSensitivity);
+            float newRotation = _head.RotationDegrees.X
+                - mouseMotion.Relative.Y * Mathf.RadToDeg(MouseSensitivity);
+            newRotation = Mathf.Clamp(newRotation, -MaxLookAngle, MaxLookAngle);
+            _head.RotationDegrees = new Vector3(
+                newRotation,
+                _head.RotationDegrees.Y,
+                _head.RotationDegrees.Z);
+        }
 
-			if (Input.IsActionJustPressed("grab"))
-			{
-				// Check if looking at cart or already grabbing cart
-				if (_grabbedCart != null ||
-					(_interactRay.IsColliding() && _interactRay.GetCollider() is Cart))
-					HandleCartGrab();
-				else
-					HandleGrab();
-			}
+        if (@event is InputEventKey key && key.Pressed)
+        {
+            if (key.Keycode == Key.Escape)
+                Input.MouseMode = Input.MouseModeEnum.Visible;
 
-			if (Input.IsActionJustPressed("drop"))
-				HandleDrop();
+            if (Input.IsActionJustPressed("flashlight"))
+                _flashlight?.Toggle();
 
-			if (Input.IsActionJustPressed("interact"))
-				HandleInteract();
-		}
-	}
+            if (Input.IsActionJustPressed("grab"))
+            {
+                // Check if looking at cart or already grabbing cart
+                if (_grabbedCart != null ||
+                    (_interactRay.IsColliding() && _interactRay.GetCollider() is Cart))
+                    HandleCartGrab();
+                else
+                    HandleGrab();
+            }
 
-	private void HandleInspectInput(InputEvent @event)
-	{
-		if (@event is InputEventKey key && key.Pressed)
-		{
-			if (key.Keycode == Key.Escape ||
-				Input.IsActionJustPressed("interact"))
-			{
-				ExitInspectEarly();
-				return;
-			}
-		}
+            if (Input.IsActionJustPressed("drop"))
+                HandleDrop();
 
-		if (@event is InputEventMouseButton mouseBtn)
-		{
-			if (mouseBtn.ButtonIndex == MouseButton.Left)
-				_isDragging = mouseBtn.Pressed;
+            if (Input.IsActionJustPressed("interact"))
+                HandleInteract();
+        }
+    }
 
-			if (mouseBtn.ButtonIndex == MouseButton.Left &&
-				mouseBtn.Pressed &&
-				_tsdCornerUi != null &&
-				_tsdCornerUi.IsScanModeActive())
-			{
-				TryClickScanBarcode();
-				return;
-			}
-		}
+    private void HandleInspectInput(InputEvent @event)
+    {
+        if (@event is InputEventKey key && key.Pressed)
+        {
+            if (key.Keycode == Key.Escape ||
+                Input.IsActionJustPressed("interact"))
+            {
+                ExitInspectEarly();
+                return;
+            }
+        }
 
-		if (@event is InputEventMouseMotion motion && _isDragging)
-		{
-			if (_inspectedItem != null)
-			{
-				_inspectedItem.GlobalRotate(
-					_camera.GlobalTransform.Basis.Y,
-					motion.Relative.X * InspectRotateSpeed);
+        if (@event is InputEventMouseButton mouseBtn)
+        {
+            if (mouseBtn.ButtonIndex == MouseButton.Left)
+                _isDragging = mouseBtn.Pressed;
 
-				_inspectedItem.GlobalRotate(
-					_camera.GlobalTransform.Basis.X,
-					motion.Relative.Y * InspectRotateSpeed);
-			}
-		}
-	}
+            if (mouseBtn.ButtonIndex == MouseButton.Left &&
+                mouseBtn.Pressed &&
+                _tsdCornerUi != null &&
+                _tsdCornerUi.IsScanModeActive())
+            {
+                TryClickScanBarcode();
+                return;
+            }
+        }
 
-	private void TryClickScanBarcode()
-	{
-		if (_camera == null || _inspectedItem == null) return;
+        if (@event is InputEventMouseMotion motion && _isDragging)
+        {
+            if (_inspectedItem != null)
+            {
+                _inspectedItem.GlobalRotate(
+                    _camera.GlobalTransform.Basis.Y,
+                    motion.Relative.X * InspectRotateSpeed);
 
-		Vector2 mousePos = GetViewport().GetMousePosition();
-		PhysicsRayQueryParameters3D rayParams = PhysicsRayQueryParameters3D.Create(
-			_camera.ProjectRayOrigin(mousePos),
-			_camera.ProjectRayOrigin(mousePos) +
-			_camera.ProjectRayNormal(mousePos) * 10f);
+                _inspectedItem.GlobalRotate(
+                    _camera.GlobalTransform.Basis.X,
+                    motion.Relative.Y * InspectRotateSpeed);
+            }
+        }
+    }
 
-		var spaceState = GetWorld3D().DirectSpaceState;
-		var result = spaceState.IntersectRay(rayParams);
+    private void TryClickScanBarcode()
+    {
+        if (_camera == null || _inspectedItem == null) return;
 
-		if (result.Count > 0)
-		{
-			GodotObject hit = result["collider"].AsGodotObject();
-			GD.Print("Clicked on: ", hit);
+        Vector2 mousePos = GetViewport().GetMousePosition();
+        PhysicsRayQueryParameters3D rayParams = PhysicsRayQueryParameters3D.Create(
+            _camera.ProjectRayOrigin(mousePos),
+            _camera.ProjectRayOrigin(mousePos) +
+            _camera.ProjectRayNormal(mousePos) * 10f);
 
-			Node current = hit as Node;
-			while (current != null)
-			{
-				if (current == _inspectedItem)
-				{
-					ScanSuccess();
-					return;
-				}
-				current = current.GetParent();
-			}
-			GD.Print("Missed barcode — rotate item to find it");
-		}
-		else
-		{
-			GD.Print("Ray hit nothing");
-		}
-	}
+        var spaceState = GetWorld3D().DirectSpaceState;
+        var result = spaceState.IntersectRay(rayParams);
 
-	private void ScanSuccess()
-	{
-		_inspectedItem.Scan();
-		_tsdCornerUi?.PlayScanSuccess();
-		GD.Print("BEEP — scanned: ", _inspectedItem.ItemName);
+        if (result.Count > 0)
+        {
+            GodotObject hit = result["collider"].AsGodotObject();
+            GD.Print("Clicked on: ", hit);
 
-		LootItem scanned = _inspectedItem;
-		_inspectedItem = null;
-		_isInspecting = false;
-		_isDragging = false;
+            Node current = hit as Node;
+            while (current != null)
+            {
+                if (current == _inspectedItem)
+                {
+                    ScanSuccess();
+                    return;
+                }
+                current = current.GetParent();
+            }
+            GD.Print("Missed barcode — rotate item to find it");
+        }
+        else
+        {
+            GD.Print("Ray hit nothing");
+        }
+    }
 
-		Input.MouseMode = Input.MouseModeEnum.Captured;
-		_tsdCornerUi?.Hide();
+    private void ScanSuccess()
+    {
+        _inspectedItem.Scan();
+        _tsdCornerUi?.PlayScanSuccess();
+        GD.Print("BEEP — scanned: ", _inspectedItem.ItemName);
 
-		scanned.StopInspect(GetTree().CurrentScene as Node3D);
-		CallDeferred(nameof(PickUpAfterScan), scanned);
-	}
+        LootItem scanned = _inspectedItem;
+        _inspectedItem = null;
+        _isInspecting = false;
+        _isDragging = false;
 
-	private void PickUpAfterScan(LootItem item)
-	{
-		_heldItem = item;
-		_heldItem.PickUp(_holdPoint);
-		GD.Print("Item now in hands");
-	}
+        Input.MouseMode = Input.MouseModeEnum.Captured;
+        _tsdCornerUi?.Hide();
 
-	private void HandleInteract()
-	{
-		if (_interactRay.IsColliding())
-		{
-			GodotObject collider = _interactRay.GetCollider();
-			if (collider is LootItem item && !item.IsHeld && !item.IsScanned)
-				EnterInspect(item);
-		}
-	}
+        scanned.StopInspect(GetTree().CurrentScene as Node3D);
+        CallDeferred(nameof(PickUpAfterScan), scanned);
+    }
 
-	private void EnterInspect(LootItem item)
-	{
-		_isInspecting = true;
-		_inspectedItem = item;
-		_isDragging = false;
+    private void PickUpAfterScan(LootItem item)
+    {
+        _heldItem = item;
+        _heldItem.PickUp(_holdPoint);
+        GD.Print("Item now in hands");
+    }
 
-		item.StartInspect(_inspectPoint);
-		Input.MouseMode = Input.MouseModeEnum.Visible;
+    private void HandleInteract()
+    {
+        if (_interactRay.IsColliding())
+        {
+            GodotObject collider = _interactRay.GetCollider();
+            if (collider is LootItem item && !item.IsHeld && !item.IsScanned)
+                EnterInspect(item);
+        }
+    }
 
-		_tsdCornerUi?.ShowForInspect();
-		_tsdCornerUi?.ShowTsdPanel();
+    private void EnterInspect(LootItem item)
+    {
+        _isInspecting = true;
+        _inspectedItem = item;
+        _isDragging = false;
 
-		GD.Print("Inspect mode: ", item.ItemName);
-	}
+        item.StartInspect(_inspectPoint);
+        Input.MouseMode = Input.MouseModeEnum.Visible;
 
-	private void ExitInspectEarly()
-	{
-		if (_inspectedItem == null) return;
+        _tsdCornerUi?.ShowForInspect();
+        _tsdCornerUi?.ShowTsdPanel();
 
-		Node3D worldParent = GetTree().CurrentScene as Node3D;
-		_inspectedItem.StopInspect(worldParent);
+        GD.Print("Inspect mode: ", item.ItemName);
+    }
 
-		_inspectedItem = null;
-		_isInspecting = false;
-		_isDragging = false;
+    private void ExitInspectEarly()
+    {
+        if (_inspectedItem == null) return;
 
-		Input.MouseMode = Input.MouseModeEnum.Captured;
-		_tsdCornerUi?.Hide();
+        Node3D worldParent = GetTree().CurrentScene as Node3D;
+        _inspectedItem.StopInspect(worldParent);
 
-		GD.Print("Exited inspect");
-	}
+        _inspectedItem = null;
+        _isInspecting = false;
+        _isDragging = false;
 
-	private void HandleCartGrab()
-	{
-		if (_grabbedCart != null)
-		{
-			_grabbedCart.Release();
-			_grabbedCart = null;
-			return;
-		}
+        Input.MouseMode = Input.MouseModeEnum.Captured;
+        _tsdCornerUi?.Hide();
 
-		if (_interactRay.IsColliding())
-		{
-			GodotObject collider = _interactRay.GetCollider();
-			if (collider is Cart cart)
-			{
-				_grabbedCart = cart;
-				cart.Grab(this);
-			}
-		}
-	}
+        GD.Print("Exited inspect");
+    }
 
-	private void HandleGrab()
-	{
-		if (_isInspecting) return;
+    private void HandleCartGrab()
+    {
+        if (_grabbedCart != null)
+        {
+            _grabbedCart.Release();
+            _grabbedCart = null;
+            return;
+        }
 
-		if (_heldItem != null)
-		{
-			HandleDrop();
-			return;
-		}
+        if (_interactRay.IsColliding())
+        {
+            GodotObject collider = _interactRay.GetCollider();
+            if (collider is Cart cart)
+            {
+                _grabbedCart = cart;
+                cart.Grab(this);
+            }
+        }
+    }
 
-		if (_interactRay.IsColliding())
-		{
-			GodotObject collider = _interactRay.GetCollider();
-			if (collider is LootItem item && !item.IsHeld && item.IsScanned)
-			{
-				_heldItem = item;
-				_heldItem.PickUp(_holdPoint);
-				GD.Print("Picked up: ", _heldItem.ItemName);
-			}
-			else if (collider is LootItem unscanned && !unscanned.IsScanned)
-			{
-				GD.Print("Scan item first");
-			}
-		}
-	}
+    private void HandleGrab()
+    {
+        if (_isInspecting) return;
 
-	private void HandleDrop()
-	{
-		if (_heldItem == null) return;
-		Node3D worldParent = GetTree().CurrentScene as Node3D;
-		_heldItem.Drop(worldParent);
-		_heldItem = null;
-	}
+        if (_heldItem != null)
+        {
+            HandleDrop();
+            return;
+        }
 
-	public override void _PhysicsProcess(double delta)
-	{
-		if (_isInspecting)
-		{
-			Velocity = Vector3.Zero;
-			return;
-		}
+        if (_interactRay.IsColliding())
+        {
+            GodotObject collider = _interactRay.GetCollider();
+            if (collider is LootItem item && !item.IsHeld && item.IsScanned)
+            {
+                _heldItem = item;
+                _heldItem.PickUp(_holdPoint);
+                GD.Print("Picked up: ", _heldItem.ItemName);
+            }
+            else if (collider is LootItem unscanned && !unscanned.IsScanned)
+            {
+                GD.Print("Scan item first");
+            }
+        }
+    }
 
-		float dt = (float)delta;
-		Vector3 velocity = Velocity;
+    private void HandleDrop()
+    {
+        if (_heldItem == null) return;
+        Node3D worldParent = GetTree().CurrentScene as Node3D;
+        _heldItem.Drop(worldParent);
+        _heldItem = null;
+    }
 
-		if (!IsOnFloor())
-			velocity.Y -= Gravity * dt;
+    public override void _PhysicsProcess(double delta)
+    {
+        if (!_taskManager.HasTask)
+        {
+            _taskManager.GetNewTask();
+        }
+        if (_isInspecting)
+        {
+            Velocity = Vector3.Zero;
+            return;
+        }
 
-		_isSprinting = Input.IsActionPressed("sprint") && _currentStamina > 0;
-		HandleStamina(dt);
+        float dt = (float)delta;
+        Vector3 velocity = Velocity;
 
-		Vector2 inputDir = Input.GetVector(
-			"move_left", "move_right",
-			"move_forward", "move_back");
+        if (!IsOnFloor())
+            velocity.Y -= Gravity * dt;
 
-		Vector3 direction = (Transform.Basis *
-			new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
+        _isSprinting = Input.IsActionPressed("sprint") && _currentStamina > 0;
+        HandleStamina(dt);
 
-		float speed = _isSprinting ? SprintSpeed : WalkSpeed;
+        Vector2 inputDir = Input.GetVector(
+            "move_left", "move_right",
+            "move_forward", "move_back");
 
-		if (direction != Vector3.Zero)
-		{
-			velocity.X = direction.X * speed;
-			velocity.Z = direction.Z * speed;
-		}
-		else
-		{
-			velocity.X = 0;
-			velocity.Z = 0;
-		}
+        Vector3 direction = (Transform.Basis *
+            new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
 
-		Velocity = velocity;
-		MoveAndSlide();
-	}
+        float speed = _isSprinting ? SprintSpeed : WalkSpeed;
 
-	private void HandleStamina(float delta)
-	{
-		bool isMoving = Input.GetVector(
-			"move_left", "move_right",
-			"move_forward", "move_back") != Vector2.Zero;
+        if (direction != Vector3.Zero)
+        {
+            velocity.X = direction.X * speed;
+            velocity.Z = direction.Z * speed;
+        }
+        else
+        {
+            velocity.X = 0;
+            velocity.Z = 0;
+        }
 
-		if (_isSprinting && isMoving)
-		{
-			_currentStamina -= StaminaDrainRate * delta;
-			_currentStamina = Mathf.Max(_currentStamina, 0);
-			_regenTimer = 0;
-		}
-		else
-		{
-			_regenTimer += delta;
-			if (_regenTimer >= StaminaRegenDelay)
-			{
-				_currentStamina += StaminaRegenRate * delta;
-				_currentStamina = Mathf.Min(_currentStamina, MaxStamina);
-			}
-		}
-	}
+        Velocity = velocity;
+        MoveAndSlide();
+    }
 
-	public float GetStaminaPercent() => _currentStamina / MaxStamina;
+    private void HandleStamina(float delta)
+    {
+        bool isMoving = Input.GetVector(
+            "move_left", "move_right",
+            "move_forward", "move_back") != Vector2.Zero;
 
-	public override void _ExitTree()
-	{
-		Input.MouseMode = Input.MouseModeEnum.Visible;
-	}
+        if (_isSprinting && isMoving)
+        {
+            _currentStamina -= StaminaDrainRate * delta;
+            _currentStamina = Mathf.Max(_currentStamina, 0);
+            _regenTimer = 0;
+        }
+        else
+        {
+            _regenTimer += delta;
+            if (_regenTimer >= StaminaRegenDelay)
+            {
+                _currentStamina += StaminaRegenRate * delta;
+                _currentStamina = Mathf.Min(_currentStamina, MaxStamina);
+            }
+        }
+    }
 
-	public override void _Notification(int what)
-	{
-		if (what == NotificationWMCloseRequest || what == NotificationCrash)
-			Input.MouseMode = Input.MouseModeEnum.Visible;
-	}
+    public float GetStaminaPercent() => _currentStamina / MaxStamina;
+
+    public override void _ExitTree()
+    {
+        Input.MouseMode = Input.MouseModeEnum.Visible;
+    }
+
+    public override void _Notification(int what)
+    {
+        if (what == NotificationWMCloseRequest || what == NotificationCrash)
+            Input.MouseMode = Input.MouseModeEnum.Visible;
+    }
+
+    private void CompleteTask()
+    {
+        if (_interactRay.IsColliding())
+        {
+            Node3D _object = _interactRay.GetCollider() as Node3D; // get the object of the raycast as Node3D
+            Node3D rootName = _object?.GetParent() as Node3D; // get the root Node3D of the object (this and this and the previous one stirng need for get name of root Node3D, without they would be staticcolider3d)
+            if (rootName == _taskManager.TargetShelves) // if the root Node3D name is the same as the target shelves
+            {
+                _taskManager.TaskCompleted();
+            }
+            else
+            {
+                GD.Print("This is either not a shelves or the wrong shelves.");
+            }
+        }
+    }
 }

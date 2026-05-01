@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://br6ermf4dmeu4"]
+
+[ext_resource type="Texture2D" uid="uid://bnjd7k3df1ljv" path="res://assets/textures/TaskMark.png" id="1_60ppe"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_14djd"]
+render_priority = 1
+no_depth_test = true
+albedo_texture = ExtResource("1_60ppe")
+billboard_mode = 1
+billboard_keep_scale = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_60ppe"]
+
+[node name="TaskMark" type="Node3D" unique_id=1011017080]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1894742419]
+transform = Transform3D(0.4571101, 0, 0, 0, -1.9980916e-08, -0.4571101, 0, 0.4571101, -1.9980916e-08, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_14djd")
+gi_mode = 0
+mesh = SubResource("QuadMesh_60ppe")
